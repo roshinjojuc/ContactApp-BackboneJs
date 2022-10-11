@@ -1,3 +1,4 @@
+Backbone.Model.prototype.idAttribute = '_id';
 // Backbone Model
 
 var Contact = Backbone.Model.extend({
@@ -5,13 +6,13 @@ var Contact = Backbone.Model.extend({
     first_name : "",
     last_name : "",
     phone_number : ""
-   }
+  },
 })
 
 // Backbone Collections
 
 var Contacts = Backbone.Collection.extend({
-  url: 'http://localhost:4000/getcontacts'
+  url: 'http://localhost:4000/api/contactapp'
 });
 
 // Initialize two Contacts
@@ -68,13 +69,30 @@ var contactView = Backbone.View.extend({
     this.$('.last_name').html('<input type = "text" class = "form-control last_name-update" value = "'+ last_name + '">');
     this.$('.phone_number').html('<input type = "text" class = "form-control phone_number-update" value = "'+ phone_number + '">');
   },
+  
   update : function(){
     this.model.set('first_name', $('.first_name-update').val());
     this.model.set('last_name', $('.last_name-update').val());
     this.model.set('phone_number', $('.phone_number-update').val());
+    
+    this.model.save(null, {
+      success : function(response){
+        console.log(response.toJSON()._id);
+      },
+      error : function(err){
+        console.log("Some internal error occured!");
+      }
+    })
   },
   delete : function(){
-    this.model.destroy();
+    this.model.destroy({
+      success : function(response){
+        console.log(response.toJSON()._id);
+      },
+      error : function(err){
+        console.log("Some internal error occured!");
+      }
+    });
   },
   cancel : function(){
     viewContact.render();
@@ -99,6 +117,7 @@ var contactsView = Backbone.View.extend({
       }, 30)
     }, this);
     this.model.on('remove', this.render, this);
+    
     this.model.fetch({
       success : function(response){
         console.log("Data fetched fine")
@@ -106,7 +125,7 @@ var contactsView = Backbone.View.extend({
       error : function(){
         console.log("Internal error!")
       }
-    })
+    });
   },
   render : function(){
     var self = this;
@@ -131,6 +150,15 @@ $(document).ready(function(){
     $('.last_name-input').val('');
     $('.phone_number-input').val('');
     contacts.add(contact);
+    contact.save(null, {
+        success : function(){
+          console.log("Data added successfully!");
+        },
+        error : function(){
+          console.log("Some internal error occured!");
+        }
+      }
+    )
   })
 })
 

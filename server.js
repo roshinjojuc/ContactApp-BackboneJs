@@ -6,6 +6,7 @@ const cors = require('cors');
 const app = express();
 app.use(bodyParser.json());
 app.use(cors());
+app.use(express.static(__dirname + '/Scripts'));
 
 const routes = require("./routes/Routes.js");
 
