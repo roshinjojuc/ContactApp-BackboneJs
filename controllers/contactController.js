@@ -10,7 +10,8 @@ const addContacts = (req,res,next) => {
     .then(resp => {
       res.status(200).json({
         success : true,
-        message : "Contact added"
+        message : "Contact added",
+        id: resp._id
       })
     })
     .catch(err => {
@@ -39,7 +40,10 @@ const deleteContacts = (req,res,next) => {
   Contact.findOneAndDelete({_id : req.params.id})
     .then(data => {
       console.log(data);
-      res.send(data);
+      res.status(200).json({
+        success : true,
+        message : "Data got deleted"
+      })
     })
     .catch(err => {
       console.log("Some internal error occured!");
